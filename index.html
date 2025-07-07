@@ -5,7 +5,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>QR Code Generator</title>
-    <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+    <!-- 加入这个库，替代原来的 qrcode.min.js -->
+<script src="https://cdn.jsdelivr.net/npm/qr-code-styling@1.5.0/lib/qr-code-styling.js"></script>
+
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.4/dist/tailwind.min.css" rel="stylesheet">
 </head>
 
@@ -19,7 +21,7 @@
         </div>
 
         <button onclick="generateQRCode()" class="bg-blue-500 text-white font-semibold py-2 px-4 rounded-lg hover:bg-blue-600">Generate</button>
-        <a id="downloadLink" style="display: none;" class="mt-4 block text-blue-500 font-medium" download>Download SVG</a>
+        <button id="downloadLink" style="display: none;" class="mt-4 block text-blue-500 font-medium" download>Download SVG</button>
 
         <!-- GitHub Project and Profile Links -->
         <div class="mt-4">
@@ -33,32 +35,41 @@
     </div>
 
     <script>
-        function generateQRCode() {
-            var text = document.getElementById("qrInput").value;
-            var qrcodeContainer = document.getElementById("qrcode");
-            qrcodeContainer.innerHTML = ""; // Clear previous QR code
-
-            if (text.trim() !== "") {
-                var qrcode = new QRCode(qrcodeContainer, {
-                    text: text,
-                    width: 128,
-                    height: 128
-                });
-
-                // Create a download link for the generated QR code
-                setTimeout(function() {
-                    var svg = qrcodeContainer.querySelector('img');
-                    var imgData = svg.src;
-                    var downloadLink = document.getElementById("downloadLink");
-                    downloadLink.href = imgData;
-                    downloadLink.download = "qrcode.png";
-                    downloadLink.style.display = "block";
-                }, 200);
-            } else {
-                alert("Please enter some text!");
-            }
+    const qrCode = new QRCodeStyling({
+        width: 128,
+        height: 128,
+        type: "svg",
+        data: "",
+        image: "",
+        dotsOptions: {
+            color: "#000",
+            type: "square"
+        },
+        backgroundOptions: {
+            color: "#ffffff"
         }
-    </script>
+    });
+
+    qrCode.append(document.getElementById("qrcode"));
+
+    function generateQRCode() {
+        const text = document.getElementById("qrInput").value.trim();
+        if (!text) {
+            alert("Please enter some text!");
+            return;
+        }
+
+        qrCode.update({
+            data: text
+        });
+
+        // 显示下载链接
+        const downloadLink = document.getElementById("downloadLink");
+        downloadLink.onclick = () => qrCode.download({ name: "qrcode", extension: "svg" });
+        downloadLink.style.display = "block";
+    }
+</script>
+
 </body>
 
 </html>
