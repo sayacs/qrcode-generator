@@ -17,10 +17,21 @@
 
         <div class="mb-4">
             <label for="qrInput" class="block font-medium text-white mb-2">Enter text</label>
-            <input type="text" id="qrInput" class="w-full border border-gray-300 rounded-lg p-2 bg-gray-900 text-white" placeholder="Enter text to generate QR code">
+            <textarea id="qrInput" rows="4" class="w-full border border-gray-300 rounded-lg p-2 bg-gray-900 text-white" placeholder="Enter text to generate QR code"></textarea>
         </div>
 
         <button onclick="generateQRCode()" class="bg-blue-500 text-white font-semibold py-2 px-4 rounded-lg hover:bg-blue-600">Generate</button>
+        <button onclick="convertToCSV()" class="bg-green-500 text-white font-semibold py-2 px-4 rounded-lg hover:bg-green-600 ml-2">Convert</button>
+        <script>
+        function convertToCSV() {
+            const textarea = document.getElementById("qrInput");
+            const lines = textarea.value
+                .split('\n')
+                .map(line => line.trim())
+                .filter(line => line.length > 0);
+            textarea.value = lines.join(', ');
+        }
+        </script>
         <button id="downloadLink" style="display: none;" class="mt-4 block text-blue-500 font-medium" download>Download SVG</button>
 
         <!-- GitHub Project and Profile Links -->
